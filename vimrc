@@ -9,12 +9,12 @@ set showcmd					 " Show commands as they are typed
 set formatoptions+=cqron1 	 " Some useful formatting options
 set showmatch				 " Show matching parens
 
-let g:username = "Enrique Paz Pérez"
-let g:author = "Enrique Paz Pérez"
-let g:email  = "quiquepaz@gmail.com"
-
 call pathogen#infect()
 call pathogen#helptags()
+
+if has ("autocmd")
+    filetype plugin indent on
+endif
 
 " wildmenu in the command menu
 set wildmenu           	 " Show completions on menu over cmdline
