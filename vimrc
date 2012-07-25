@@ -36,10 +36,6 @@ command -nargs=0 KillEolLF      :execute("%s/\\r$//")
 command -nargs=0 KillEolSpaces  :execute("%s/[ \\t]\\+$//")
 command -nargs=0 KillEolGarbage :execute("%s/[ \\t\\r]\\+$//")
 
-" <C-p> -> Toggle paste
-map  <C-p>   :set paste!<CR>
-imap <C-p>   <ESC>:set paste!<CR>i
-
 " <C-p> -> Toggle numbers
 map  <C-n>   :set nu!<CR>
 imap <C-n>   <ESC>:set nu!<CR>i

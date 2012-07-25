@@ -1,0 +1,46 @@
+%% For testing
+
+-include_lib("eunit/include/eunit.hrl").
+-export([setup/0, cleanup/0]).
+
+%%%===============================================================
+%%% Tests
+%%%===============================================================
+
+setup() ->
+  % XXX Perform necessary opperations to initialize the suite
+  ok.
+
+cleanup() ->
+  % XXX Cleans up after running the suite
+  ok.
+
+%%%===============================================================
+%%% Tests
+%%%===============================================================
+
+% XXX Test example, remove after committing this file!
+%get_servers_test_() ->
+%     {setup,
+%      fun() ->
+%              setup()
+%      end,
+%      fun(_) ->
+%              cleanup()
+%      end,     
+%      {inorder,
+%       [?_assertEqual([], clam_facade:get_servers()),
+%        ?_test(clam_facade:start_default_server(clam_test_server1)),
+%        ?_assertEqual([clam_test_server1], clam_facade:get_servers()),
+%        ?_test(clam_facade:start_default_server(clam_test_server2)),
+%        ?_assert(
+%           lstd_lists:same_members(
+%             [clam_test_server1,clam_test_server2],
+%             clam_facade:get_servers())),
+%        ?_test(clam_facade:stop_server(clam_test_server1)),
+%        ?_assertEqual([clam_test_server2], clam_facade:get_servers())        
+%       ]}}.
+
+%%%===============================================================
+%%% Internal functions
+%%%===============================================================

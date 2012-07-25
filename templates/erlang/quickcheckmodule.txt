@@ -1,0 +1,98 @@
+-compile(export_all).
+-include_lib("eqc/include/eqc.hrl").
+-include_lib("lambdastd/include/lstd_lambdalog.hrl").
+
+%%%===============================================================
+%%% API
+%%%===============================================================
+
+%%--------------------------------------------------------------------
+%% @doc Sets up a proper environment to test wsmanager. This function must be
+%% called before calling test/0
+%% @spec setup() -> any()
+%% @end
+%%--------------------------------------------------------------------
+setup() ->
+  % XXX Start needed applications here
+  ok.
+
+%%--------------------------------------------------------------------
+%% @doc Makes any necessary cleanup after running test/0. This
+%% function must be
+%% called after calling test/0
+%% @spec teardown() -> any()
+%% @end
+%%--------------------------------------------------------------------
+teardown() ->
+  % XXX Stop started applications here
+  ok.
+
+%%--------------------------------------------------------------------
+%% @doc Launches the eqc test suite. This function should be called between
+%% calls to setup/0 and teardown/0
+%% @spec test() -> any()
+%% @end
+%%--------------------------------------------------------------------
+test() ->
+  % XXX This function is intended to make run_test/5 calls
+  ok.
+
+%%--------------------------------------------------------------------
+%% @doc Launches an eqc test notifying or throwsing an exception if the test
+%% fails. Of course, eqc output is also shown. Test is the name of a function
+%% in Module which receives no arguments.
+%% @spec run_test(Module::atom(), Test::atom(), Strategy) -> ok | fail
+%% Strategy = notify_and_continue | except
+%% @end
+%%--------------------------------------------------------------------
+run_test(Module, Test, Strategy) ->
+  case eqc:quickcheck(eqc:numtests(10000, Module:Test())) of
+    true -> ok;
+    false ->
+      case Strategy of
+        notify_and_continue -> io:format("~p:~p() FAILED~n~n", [Module, Test]);
+        except -> throw ({failed, Module, Test});
+        _ -> fail
+      end
+  end.
+
+%%--------------------------------------------------------------------
+%% @doc Launches an eqc test notifying or throwing an exception if the test
+%% fails. Of course, eqc output is also shown. Test is the name of a function
+%% in Module which receives no arguments. Setup and Cleanup are functions which
+%% receive no arguments.
+%% @spec run_test(Module::atom(), Test::atom(), Setup, Cleanup, Strategy) -> ok | fail
+%% Strategy = notify_and_continue | except
+%% @end
+%%--------------------------------------------------------------------
+run_test(Module, Test, Setup, Cleanup, Strategy) ->
+  try
+    Setup()
+  catch Se ->
+    throw({setup_failed, Se})
+  end,
+  try
+    run_test(Module, Test, Strategy)
+  after
+    try
+      Cleanup()
+    catch Ce ->
+      throw({cleanup_failed, Ce})
+    end
+  end.
+
+%%--------------------------------------------------------------------
+%% LOCAL SETUPs AND TEARDOWNs
+%%--------------------------------------------------------------------
+
+%%--------------------------------------------------------------------
+%% TESTS
+%%--------------------------------------------------------------------
+
+%%--------------------------------------------------------------------
+%% DATA GENERATORS
+%%--------------------------------------------------------------------
+
+%%--------------------------------------------------------------------
+%% Internal Functions
+%%--------------------------------------------------------------------
