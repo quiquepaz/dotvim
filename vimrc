@@ -37,8 +37,13 @@ command -nargs=0 KillEolSpaces  :execute("%s/[ \\t]\\+$//")
 command -nargs=0 KillEolGarbage :execute("%s/[ \\t\\r]\\+$//")
 
 " <C-p> -> Toggle numbers
-map  <C-n>   :set nu!<CR>
-imap <C-n>   <ESC>:set nu!<CR>i
+map  <C-u>   :set nu!<CR>
+imap <C-u>   <ESC>:set nu!<CR>i
+
+" <C-n> -> Next buffer
+map  <C-n>   :bn<CR>
+" <C-b> -> Previous buffer
+map  <C-b>   :bp<CR>
 
 set list
 set listchars=tab:\ \ ,trail:»,extends:↷,precedes:↶
