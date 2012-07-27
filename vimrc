@@ -2,9 +2,7 @@ set tabstop=4				 " Set tabstops to 4 spaces
 set expandtab
 set shiftwidth=4			 " Set indentation shift-width to 4 spaces
 set autoindent				 " Enable automatic indentation
-set copyindent				 " Enable automatic indentation of pasted lines
 set laststatus=2			 " Always show a status line
-set showfulltag				 " Show full prototype of tags on completion
 set showcmd					 " Show commands as they are typed
 set formatoptions+=cqron1 	 " Some useful formatting options
 set showmatch				 " Show matching parens
@@ -16,11 +14,15 @@ if has ("autocmd")
     filetype plugin indent on
 endif
 
-" wildmenu in the command menu
-set wildmenu           	 " Show completions on menu over cmdline
-set wildchar=<TAB>     	 " Navigate wildmenu with tabs
+" on cmd, 1 tab longest possible completion, 2 shows available list, 3 and
+" subsequent cycle through that list
+set wildmode=longest,list,full
+" wildmenu in the command menu (only for 'full')
+set wildmenu
 " Ignore backups and misc files for wilcompletion
 set wildignore=*.o,*.cm[ioax],*.ppu,*.core,*~,core,#*#
+
+let g:explSplitRight   = 1       " Put new opened windows at right.
 
 syntax on
 colorscheme elflord
@@ -47,10 +49,8 @@ map  <C-b>   :bp<CR>
 
 set list
 set listchars=tab:\ \ ,trail:»,extends:↷,precedes:↶
-"set listchars=eol:•,tab:↦\ ,trail:»,extends:↷,precedes:↶
 
-" Allow use of w!! to write a file as sudo
-" cmap w!! %!sudo tee > /dev/null %
+" Allow use of :SW to write a file as sudo
 command SW w !sudo tee % > /dev/null
 
 set backupdir=./.vimbackup,~/.vimbackup,.,/tmp
