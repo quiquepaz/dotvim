@@ -6,6 +6,7 @@ set laststatus=2			 " Always show a status line
 set showcmd					 " Show commands as they are typed
 set formatoptions+=cqron1 	 " Some useful formatting options
 set showmatch				 " Show matching parens
+set textwidth=100
 
 call pathogen#infect()
 call pathogen#helptags()
@@ -91,4 +92,14 @@ function! ErlangQuickcheckModule()
 endfunction
 command! -nargs=0 Equickcheckmodule call ErlangQuickcheckModule()
 
+" LaTeX and beamer txt snippets
+function! BeamerFrame()
+    r~/.vim/templates/latex/frame.txt
+endfunction
+command! -nargs=0 Lframe call BeamerFrame()
+
+function! LatexItemize()
+    r~/.vim/templates/latex/itemize.txt
+endfunction
+command! -nargs=0 Litem call LatexItemize()
 
