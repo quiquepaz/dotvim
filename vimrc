@@ -25,6 +25,9 @@ set wildignore=*.o,*.cm[ioax],*.ppu,*.core,*~,core,#*#
 
 let g:explSplitRight   = 1       " Put new opened windows at right.
 
+let g:erlangRefactoring = 1
+let g:erlangWranglerPath = '/var/local/scratch/wrangler'
+
 syntax on
 colorscheme elflord
 
@@ -51,10 +54,19 @@ map  <C-b>   :bp<CR>
 set list
 set listchars=tab:\ \ ,trail:»,extends:↷,precedes:↶
 
+map ,t :CommandT<CR>
+imap ,,, <esc>bdwi<<esc>pa><cr></<esc>pa><esc>k2>>
+
 " Allow use of :SW to write a file as sudo
 command SW w !sudo tee % > /dev/null
 
 set backupdir=./.vimbackup,~/.vimbackup,.,/tmp
+
+
+set incsearch
+"Limit words with an underscore character
+"set iskeyword-=_
+
 
 " Erlang txt snippets
 function! ErlangAuthor()
@@ -67,30 +79,15 @@ function! ErlangFunctionEdoc()
 endfunction
 command! -nargs=0 Efunedoc call ErlangFunctionEdoc()
 
-function! ErlangGenServer()
-    r~/.vim/templates/erlang/gen_server.txt
-endfunction
-command! -nargs=0 Egenserver call ErlangGenServer()
-
-function! ErlangSupervisor()
-    r~/.vim/templates/erlang/supervisor.txt
-endfunction
-command! -nargs=0 Esupervisor call ErlangSupervisor()
-
-function! ErlangApplication()
-    r~/.vim/templates/erlang/application.txt
-endfunction
-command! -nargs=0 Eapplication call ErlangApplication()
-
-function! ErlangDotApp()
-    r~/.vim/templates/erlang/dotapp.txt
-endfunction
-command! -nargs=0 Edotapp call ErlangDotApp()
-
 function! ErlangQuickcheckModule()
     r~/.vim/templates/erlang/quickcheckmodule.txt
 endfunction
 command! -nargs=0 Equickcheckmodule call ErlangQuickcheckModule()
+
+function! ErlangEunitModule()
+    r~/.vim/templates/erlang/eunitmodule.txt
+endfunction
+command! -nargs=0 Eeunit call ErlangEunitModule()
 
 " LaTeX and beamer txt snippets
 function! BeamerFrame()

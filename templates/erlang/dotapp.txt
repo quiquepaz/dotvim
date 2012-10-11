@@ -1,8 +1,0 @@
-{application, xxx,
-  [{description,""},
-   {vsn, ""},
-   {modules, []},
-   {registered, [xxx_app]},
-   {applications, []},
-   {mod, {xxx_app, []}},
-   {env, []}]}.
