@@ -51,8 +51,8 @@ map  <C-n>   :bn<CR>
 " <C-b> -> Previous buffer
 map  <C-b>   :bp<CR>
 
-set list
-set listchars=tab:\ \ ,trail:»,extends:↷,precedes:↶
+"set list
+"set listchars=tab:\ \ ,trail:»,extends:↷,precedes:↶
 
 map ,t :CommandT<CR>
 imap ,,, <esc>bdwi<<esc>pa><cr></<esc>pa><esc>k2>>
