@@ -13,7 +13,7 @@ call pathogen#helptags()
 
 if has ("autocmd")
     filetype plugin indent on
-endif
+end
 
 " on cmd, 1 tab longest possible completion, 2 shows available list, 3 and
 " subsequent cycle through that list
@@ -51,10 +51,10 @@ map  <C-n>   :bn<CR>
 " <C-b> -> Previous buffer
 map  <C-b>   :bp<CR>
 
-"set list
-"set listchars=tab:\ \ ,trail:»,extends:↷,precedes:↶
+set list
+set listchars=tab:\ \ ,trail:»,extends:↷,precedes:↶
 
-map ,t :CommandT<CR>
+"map ,t :CommandT<CR>
 imap ,,, <esc>bdwi<<esc>pa><cr></<esc>pa><esc>k2>>
 
 " Allow use of :SW to write a file as sudo
@@ -62,10 +62,17 @@ command SW w !sudo tee % > /dev/null
 
 set backupdir=./.vimbackup,~/.vimbackup,.,/tmp
 
+nnoremap <silent> <C-t>e :CommandT<CR>
+nnoremap <silent> <C-t>b :CommandTBuffer<CR>
 
 set incsearch
+
 "Limit words with an underscore character
 "set iskeyword-=_
+
+"Color long lines
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+match OverLength /\%81v.\+/
 
 
 " Erlang txt snippets
