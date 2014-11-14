@@ -6,13 +6,20 @@ set laststatus=2			 " Always show a status line
 set showcmd					 " Show commands as they are typed
 set formatoptions+=cqron1 	 " Some useful formatting options
 set showmatch				 " Show matching parens
-set textwidth=100
+set textwidth=80
 
 call pathogen#infect()
 call pathogen#helptags()
 
+syntax on
+colorscheme ron
+
+highlight Pmenu ctermbg=grey gui=bold
+highlight PmenuSel ctermbg=green gui=bold
+
 if has ("autocmd")
     filetype plugin indent on
+    au BufRead,BufNewFile *.ml,*.mli compiler ocaml
 end
 
 " on cmd, 1 tab longest possible completion, 2 shows available list, 3 and
@@ -23,13 +30,33 @@ set wildmenu
 " Ignore backups and misc files for wilcompletion
 set wildignore=*.o,*.cm[ioax],*.ppu,*.core,*~,core,#*#
 
-let g:explSplitRight   = 1       " Put new opened windows at right.
-
+" Wrangler stuff for Erlang
 let g:erlangRefactoring = 1
 let g:erlangWranglerPath = '/var/local/scratch/wrangler'
 
-syntax on
-colorscheme elflord
+" Navigating completion menu with j and k
+inoremap <expr> j pumvisible() ? "\<C-N>" : "j"
+inoremap <expr> k pumvisible() ? "\<C-P>" : "k"
+
+" Clear trailing whitespaces on save
+
+fun! <SID>StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+
+autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
+
+" Merlin stuff for ocaml
+let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
+execute "set rtp+=" . g:opamshare . "/merlin/vim"
+execute "set rtp+=" . g:opamshare . "/merlin/vimbufsync"
+let g:syntastic_ocaml_checkers = ['merlin']
+
+" Ocaml indentation via ocp-indent
+autocmd FileType ocaml source /home/enrique/.opam/4.01.0/share/vim/syntax/ocp-indent.vim
 
 " Functions and Commands   }}}1{{{1
 " Autocorrect some usually-mispelled commands
@@ -37,10 +64,7 @@ command! -nargs=0 -bang Q q<bang>
 command! -bang W write<bang>
 command! -nargs=0 -bang Wq wq<bang>
 
-" Some commands used to thrash trailing garbage in lines.
-command -nargs=0 KillEolLF      :execute("%s/\\r$//")
-command -nargs=0 KillEolSpaces  :execute("%s/[ \\t]\\+$//")
-command -nargs=0 KillEolGarbage :execute("%s/[ \\t\\r]\\+$//")
+let maplocalleader = "\\"
 
 " <C-p> -> Toggle numbers
 map  <C-u>   :set nu!<CR>
@@ -51,11 +75,11 @@ map  <C-n>   :bn<CR>
 " <C-b> -> Previous buffer
 map  <C-b>   :bp<CR>
 
-set list
-set listchars=tab:\ \ ,trail:»,extends:↷,precedes:↶
+" set list
+" set listchars=tab:\ \ ,trail:»,extends:↷,precedes:↶
 
 "map ,t :CommandT<CR>
-imap ,,, <esc>bdwi<<esc>pa><cr></<esc>pa><esc>k2>>
+"imap ,,, <esc>bdwi<<esc>pa><cr></<esc>pa><esc>k2>>
 
 " Allow use of :SW to write a file as sudo
 command SW w !sudo tee % > /dev/null
@@ -106,4 +130,12 @@ function! LatexItemize()
     r~/.vim/templates/latex/itemize.txt
 endfunction
 command! -nargs=0 Litem call LatexItemize()
+
+function! OCamlType()
+    let col  = col('.')
+    let line = line('.')
+    let file = expand("%:p:r")
+    echo system("annot -n -type ".line." ".col." ".file.".annot")
+endfunction    
+map ,t :call OCamlType()<return>
 
