@@ -12,15 +12,24 @@ call pathogen#infect()
 call pathogen#helptags()
 
 syntax on
-colorscheme ron
-
-highlight Pmenu ctermbg=grey gui=bold
-highlight PmenuSel ctermbg=green gui=bold
 
 if has ("autocmd")
     filetype plugin indent on
     au BufRead,BufNewFile *.ml,*.mli compiler ocaml
 end
+
+" Color settings
+colorscheme ron
+highlight Pmenu ctermbg=grey gui=bold
+highlight PmenuSel ctermbg=green gui=bold
+
+" Color long lines
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+match OverLength /\%81v.\+/
+
+" Highlight tabs and trailing spaces
+set list
+set listchars=tab:\ \ ,trail:»
 
 " on cmd, 1 tab longest possible completion, 2 shows available list, 3 and
 " subsequent cycle through that list
@@ -30,76 +39,69 @@ set wildmenu
 " Ignore backups and misc files for wilcompletion
 set wildignore=*.o,*.cm[ioax],*.ppu,*.core,*~,core,#*#
 
-" Wrangler stuff for Erlang
-let g:erlangRefactoring = 1
-let g:erlangWranglerPath = '/var/local/scratch/wrangler'
-
 " Navigating completion menu with j and k
 inoremap <expr> j pumvisible() ? "\<C-N>" : "j"
 inoremap <expr> k pumvisible() ? "\<C-P>" : "k"
 
 " Clear trailing whitespaces on save
-
 fun! <SID>StripTrailingWhitespaces()
-    let l = line(".")
-    let c = col(".")
-    %s/\s\+$//e
-    call cursor(l, c)
+    let save_cursor = getpos(".")
+    :silent! %s/\s\+$//e
+    :silent! %s#\($\n\s*\)\+\%$##
+    call setpos('.', save_cursor)
 endfun
 
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
-" Merlin stuff for ocaml
-let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
-execute "set rtp+=" . g:opamshare . "/merlin/vim"
-execute "set rtp+=" . g:opamshare . "/merlin/vimbufsync"
-let g:syntastic_ocaml_checkers = ['merlin']
+" <C-u> -> Toggle numbers
+map  <C-u>   :set nu!<CR>
+imap <C-u>   <ESC>:set nu!<CR>i
 
-" Ocaml indentation via ocp-indent
-autocmd FileType ocaml source /home/enrique/.opam/4.01.0/share/vim/syntax/ocp-indent.vim
-
-" Functions and Commands   }}}1{{{1
 " Autocorrect some usually-mispelled commands
 command! -nargs=0 -bang Q q<bang>
 command! -bang W write<bang>
 command! -nargs=0 -bang Wq wq<bang>
-
-let maplocalleader = "\\"
-
-" <C-p> -> Toggle numbers
-map  <C-u>   :set nu!<CR>
-imap <C-u>   <ESC>:set nu!<CR>i
-
-" <C-n> -> Next buffer
-map  <C-n>   :bn<CR>
-" <C-b> -> Previous buffer
-map  <C-b>   :bp<CR>
-
-" set list
-" set listchars=tab:\ \ ,trail:»,extends:↷,precedes:↶
-
-"map ,t :CommandT<CR>
-"imap ,,, <esc>bdwi<<esc>pa><cr></<esc>pa><esc>k2>>
 
 " Allow use of :SW to write a file as sudo
 command SW w !sudo tee % > /dev/null
 
 set backupdir=./.vimbackup,~/.vimbackup,.,/tmp
 
-nnoremap <silent> <C-t>e :CommandT<CR>
-nnoremap <silent> <C-t>b :CommandTBuffer<CR>
-
 set incsearch
 
-"Limit words with an underscore character
+" Limit words with an underscore character
 "set iskeyword-=_
 
-"Color long lines
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%81v.\+/
+" CTags
 
+function CreateTags()
+    exec ':!ctags -R'
+endfunction
+map <LocalLeader>t :call CreateTags()<CR>
 
-" Erlang txt snippets
+let maplocalleader = "\\"
+
+" NERDTree
+map <C-b> :NERDTreeToggle<CR>
+
+" Ocaml
+"     Indentation via ocp-indent
+autocmd FileType ocaml source /home/enrique/.opam/4.01.0/share/vim/syntax/ocp-indent.vim
+"     Merlin stuff
+let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
+execute "set rtp+=" . g:opamshare . "/merlin/vim"
+execute "set rtp+=" . g:opamshare . "/merlin/vimbufsync"
+let g:syntastic_ocaml_checkers = ['merlin']
+function! OCamlType()
+    let col  = col('.')
+    let line = line('.')
+    let file = expand("%:p:r")
+    echo system("annot -n -type ".line." ".col." ".file.".annot")
+endfunction
+map ,t :call OCamlType()<return>
+
+" Erlang
+"     txt snippets
 function! ErlangAuthor()
     r~/.vim/templates/erlang/author.txt
 endfunction
@@ -120,7 +122,8 @@ function! ErlangEunitModule()
 endfunction
 command! -nargs=0 Eeunit call ErlangEunitModule()
 
-" LaTeX and beamer txt snippets
+" LaTeX & Beamer
+"     txt snippets
 function! BeamerFrame()
     r~/.vim/templates/latex/frame.txt
 endfunction
@@ -130,12 +133,3 @@ function! LatexItemize()
     r~/.vim/templates/latex/itemize.txt
 endfunction
 command! -nargs=0 Litem call LatexItemize()
-
-function! OCamlType()
-    let col  = col('.')
-    let line = line('.')
-    let file = expand("%:p:r")
-    echo system("annot -n -type ".line." ".col." ".file.".annot")
-endfunction    
-map ,t :call OCamlType()<return>
-
