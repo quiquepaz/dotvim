@@ -80,6 +80,7 @@ endfunction
 map <LocalLeader>t :call CreateTags()<CR>
 
 let maplocalleader = "\\"
+map <leader>v :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
 " NERDTree
 map <C-b> :NERDTreeToggle<CR>
